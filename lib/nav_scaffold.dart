@@ -4,16 +4,19 @@ import 'routes_list.dart' show routeList;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-// Future<http.Response> fetchData() {
+// Future<http.Response> fetchSliderFuture() {
 //   return http.get(Uri.parse('https://wolvideos.firebaseapp.com/wolProject.js'));
 // }
+// bool sliderIsLoaded = false;
+// List sliderData = [];
+final Future sliderFuture = fetchSliderFuture();
+Future fetchSliderFuture() async {
+  // String placeholderUrl = 'https://api.jsonbin.io/b/62632205bc312b30ebeb8b2e';
+  String url = 'https://wolvideos.firebaseapp.com/wolProject.js';
+  http.Response response = await http.get(Uri.parse(url));
 
-void fetchData() async {
-  http.Response response = await http
-      .get(Uri.parse('https://wolvideos.firebaseapp.com/wolProject.js'));
-
-  // Map data = jsonDecode(response.body);
-  // print(data);
+  List data = jsonDecode(response.body)['videos'];
+  return data;
 }
 
 class NavScaffold extends StatefulWidget {
@@ -35,8 +38,16 @@ class _NavScaffoldState extends State<NavScaffold> {
 
   @override
   void initState() {
-    fetchData();
-    print('init state');
+    fetchSliderFuture();
+    // fetchSliderFuture().then((value) => {
+    // sliderData = value,
+    // setState(
+    //   () => sliderIsLoaded = true,
+    // ),
+    // print(sliderIsLoaded),
+    // print(sliderData)
+    // });
+    // print('init state');
 
     super.initState();
   }

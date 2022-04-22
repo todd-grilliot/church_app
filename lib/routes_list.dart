@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'nav_scaffold.dart' show sliderFuture;
 import 'home/home_slider.dart' show FullScreenSlider;
+// import 'nav_scaffold.dart' show fetchData;
 
 const TextStyle optionStyle = TextStyle(
   fontSize: 30,
@@ -19,7 +21,9 @@ final List<Widget> routeList = [
     'Listen',
     style: optionStyle,
   ),
-  FullScreenSlider(),
+  FullScreenSlider(
+    dataFuture: sliderFuture,
+  ),
   Text(
     'Blog',
     style: optionStyle,
