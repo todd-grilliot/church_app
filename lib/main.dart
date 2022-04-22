@@ -9,8 +9,6 @@ final themeMode = ValueNotifier(2);
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // static const String _title = 'Word of Lifess';
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,25 +27,35 @@ class MyStatefulWidget extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-  int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  int _selectedIndex = 3;
+  static const TextStyle optionStyle = TextStyle(
+    fontSize: 30,
+    fontWeight: FontWeight.bold,
+  );
   static List<Widget> _widgetOptions = <Widget>[
     Text(
-      'Church Online',
+      'Live',
       style: optionStyle,
     ),
     Text(
-      'I\'m New',
+      'Social',
+      style: optionStyle,
+    ),
+    Text(
+      'Listen',
       style: optionStyle,
     ),
     FullscreenSliderDemo(),
     Text(
-      'Giving',
+      'Blog',
       style: optionStyle,
     ),
     Text(
-      'Contact Us',
+      'Visit',
+      style: optionStyle,
+    ),
+    Text(
+      'Give',
       style: optionStyle,
     ),
   ];
@@ -61,6 +69,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[500],
       extendBodyBehindAppBar: true,
       extendBody: true,
       appBar: AppBar(
@@ -78,7 +87,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               constraints: BoxConstraints(),
               padding: EdgeInsets.zero,
               onPressed: null,
-              icon: SvgPicture.asset('assets/icons/LoGo.svg'),
+              icon: SvgPicture.asset('assets/icons/ContactUs.svg'),
             )
           ],
         ),
@@ -90,30 +99,44 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         // elevation: 0, //getting rid of this leaves a shadow...
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-              icon: Icon(Icons.church),
-              label: 'Church Online',
+              icon: SvgPicture.asset('assets/icons/Live.svg'),
+              label: 'LIVE',
               backgroundColor: Colors.transparent),
           BottomNavigationBarItem(
-              icon: Icon(Icons.new_releases),
-              label: 'I\'m New',
+              icon: SvgPicture.asset('assets/icons/Social.svg'),
+              label: 'SOCIAL',
               backgroundColor: Colors.transparent),
           BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Listen\\Watch',
+              icon: SvgPicture.asset('assets/icons/Listen.svg'),
+              label: 'LISTEN',
               backgroundColor: Colors.transparent),
           BottomNavigationBarItem(
-              icon: Icon(Icons.attach_money),
-              label: 'Giving',
+              icon: SvgPicture.asset(
+                'assets/icons/Home.svg',
+                color: Colors.white,
+              ),
+              label: 'HOME',
               backgroundColor: Colors.transparent),
           BottomNavigationBarItem(
-              icon: Icon(Icons.contact_mail),
-              label: 'Contact Us',
+              icon: SvgPicture.asset('assets/icons/Blog.svg'),
+              label: 'BLOG',
+              backgroundColor: Colors.transparent),
+          BottomNavigationBarItem(
+              icon: SvgPicture.asset('assets/icons/Visit.svg'),
+              label: 'VISIT',
+              backgroundColor: Colors.transparent),
+          BottomNavigationBarItem(
+              icon: SvgPicture.asset('assets/icons/Give.svg'),
+              label: 'GIVE',
               backgroundColor: Colors.transparent),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
+        selectedLabelStyle:
+            TextStyle(fontSize: 18, fontWeight: FontWeight.w300),
+        // selectedItemColor: Colors.amber[800],
+        // selectedIconTheme: IconThemeData(color: Colors.red),
         onTap: _onItemTapped,
       ),
     );

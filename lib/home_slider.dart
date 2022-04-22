@@ -61,20 +61,15 @@ class FullscreenSliderDemo extends StatelessWidget {
                           Expanded(
                             flex: 2,
                             child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Icon(
-                                Icons.share,
-                                color: Colors.white,
-                                size: 30,
-                              ),
-                            ),
+                                padding: const EdgeInsets.all(16.0),
+                                child:
+                                    SvgPicture.asset("assets/icons/Share.svg")),
                           ),
                           Expanded(
                             flex: 8,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                SvgPicture.asset('assets/icons/LoGo.svg'),
                                 Text(item['date'],
                                     style: TextStyle(
                                         color: Colors.white54,
@@ -98,7 +93,13 @@ class FullscreenSliderDemo extends StatelessWidget {
                                         onPressed: null,
                                         child: Row(children: [
                                           Text('Experience'),
-                                          Icon(Icons.play_arrow_outlined)
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                4.0, 2.0, 0, 0),
+                                            child: SvgPicture.asset(
+                                              "assets/icons/Watch.svg",
+                                            ),
+                                          ),
                                         ]),
                                         style: ButtonStyle(
                                             backgroundColor:
@@ -109,7 +110,7 @@ class FullscreenSliderDemo extends StatelessWidget {
                                                     Colors.black87),
                                             padding: MaterialStateProperty.all(
                                                 EdgeInsets.symmetric(
-                                                    vertical: 0.5,
+                                                    vertical: 3,
                                                     horizontal: 15.0)),
                                             minimumSize:
                                                 MaterialStateProperty.all(
@@ -150,13 +151,9 @@ class FullscreenSliderDemo extends StatelessWidget {
                           Expanded(
                             flex: 2,
                             child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Icon(
-                                Icons.favorite_border,
-                                color: Colors.white,
-                                size: 30,
-                              ),
-                            ),
+                                padding: const EdgeInsets.all(16.0),
+                                child:
+                                    SvgPicture.asset('assets/icons/Like.svg')),
                           ),
                         ],
                       ),
