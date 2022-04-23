@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
-import 'package:church_app/nav_scaffold.dart';
+// import 'package:flutter/cupertino.dart';
+// import 'package:church_app/nav_scaffold.dart';
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+// import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 List<Map> defaultSlides = [
@@ -25,11 +25,11 @@ List<Map> defaultSlides = [
   },
 ];
 
-List<String> imagePaths = [
-  "assets/lando-calrissian-dance.gif",
-  "assets/Lando-Leia.gif",
-  "assets/lando-return.gif",
-];
+// List<String> imagePaths = [
+//   "assets/lando-calrissian-dance.gif",
+//   "assets/Lando-Leia.gif",
+//   "assets/lando-return.gif",
+// ];
 
 List<Container> slidesMap(data) {
   return defaultSlides

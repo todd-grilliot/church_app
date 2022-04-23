@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'nav_scaffold.dart' show sliderFuture;
 import 'home/home_slider.dart' show FullScreenSlider;
+import 'video_test.dart' show VideoTest;
 // import 'nav_scaffold.dart' show fetchData;
 
 const TextStyle optionStyle = TextStyle(
@@ -9,9 +10,12 @@ const TextStyle optionStyle = TextStyle(
 );
 
 final List<Widget> routeList = [
-  Text(
-    'Live',
-    style: optionStyle,
+  // Text(
+  //   'Live',
+  //   style: optionStyle,
+  // ),
+  VideoTest(
+    dataFuture: sliderFuture,
   ),
   Text(
     'Social',

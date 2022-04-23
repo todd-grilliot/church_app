@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'routes_list.dart' show routeList;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:video_player/video_player.dart';
 
 // Future<http.Response> fetchSliderFuture() {
 //   return http.get(Uri.parse('https://wolvideos.firebaseapp.com/wolProject.js'));
@@ -38,6 +39,7 @@ class _NavScaffoldState extends State<NavScaffold> {
 
   @override
   void initState() {
+    super.initState();
     fetchSliderFuture();
     // fetchSliderFuture().then((value) => {
     // sliderData = value,
@@ -48,8 +50,6 @@ class _NavScaffoldState extends State<NavScaffold> {
     // print(sliderData)
     // });
     // print('init state');
-
-    super.initState();
   }
 
   @override
