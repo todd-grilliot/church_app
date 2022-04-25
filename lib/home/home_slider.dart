@@ -26,31 +26,28 @@ class _FullScreenSliderState extends State<FullScreenSlider> {
   // late Future<List> VideoFutures;
   // late final data;
   late final List<NetworkImage> _gifs;
-  late final List<Future> _preCaches;
+  // late final List<Future> _preCaches;
+
   late Future<List> _gifFutures;
 
-  // videoFutures wants to be assigned to a future that resolves to a list of futures...
-  // the dataFuture resolves to the whole data set... not a list...
-  // the problem is that Video futures was never initialized... so i'm trying to initialize it on the first line
-  //
+  // gets data, awaits first image, concurrently precaches all of them and returns a future...
   Future<List> getGifFutures(dataFuture) async {
     List data = await dataFuture;
-    //needs to return a future that contains a list of precached images...
+
     _gifs = await data.map<NetworkImage>((item) {
       return NetworkImage(item['interactive']);
     }).toList();
-    _preCaches = await _gifs.map((item) {
-      return precacheImage(item, context);
-    }).toList();
-    return _gifs;
+    //wait for all of them.. takes longer.. but doesn't have that black background...
+    for (var i = 0; i < _gifs.length; i++) {
+      await precacheImage(NetworkImage(data[i]['interactive']), context);
+    }
+    // await precacheImage(NetworkImage(data[0]['interactive']), context);
 
-    // _controllers = await data.map<VideoPlayerController>((item) {
-    //   return VideoPlayerController.network(item['interactive']);
+    // _preCaches = _gifs.map((item) {
+    //   return precacheImage(item, context);
     // }).toList();
-    // _initializeFutures = await _controllers.map<Future>((item) {
-    //   return item.initialize();
-    // }).toList();
-    // return _initializeFutures;
+
+    return _gifs;
   }
 
   Future<List> getData() async {
@@ -60,24 +57,12 @@ class _FullScreenSliderState extends State<FullScreenSlider> {
   @override
   void initState() {
     super.initState();
+  }
 
-    // data = getData();
-    // precacheImage(provider, context)
-    // data = widget.dataFuture.then(
-    //   (value) => value.map((item) {
-    //     return item;
-    //   }).toList(),
-    // );
-
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _gifFutures = getGifFutures(getData());
-
-    // VideoFutures = assignFuture();
-    // getData();
-    // VideoFutures = await widget.dataFuture.then((value) => {
-    //  return getVideoFutures(value)
-    // });
-    //once we get videofutures, use the value to getVideoFutures...
-    // widget.dataFuture.then((value) => {VideoFutures = getVideoFutures(value)});
   }
 
   @override
@@ -104,14 +89,9 @@ class _FullScreenSliderState extends State<FullScreenSlider> {
                 print('data $snapData');
                 List gifs = snapData.map((item) {
                   int index = snapData.indexOf(item);
-                  NetworkImage gif = snapData[index];
+                  NetworkImage gif = _gifs[index];
                   return gif;
                 }).toList();
-                // List gifs = snapData
-                //     .map(
-                //       (item) => {item[snapData.indexOf(item)]['interactive']},
-                //     )
-                //     .toList();
                 return CarouselSlider(
                   options: CarouselOptions(
                     height: _fullHeight,
@@ -123,18 +103,44 @@ class _FullScreenSliderState extends State<FullScreenSlider> {
                   items: snapData.map((item) {
                     int index = snapData.indexOf(item);
                     return Builder(builder: (BuildContext context) {
+                      //i think just make a background or a ternary instead of the future builder...
+                      print('item $item');
+
                       return Container(
                           padding: EdgeInsets.only(top: 500),
                           decoration: BoxDecoration(
                               image: DecorationImage(
-                                  image: gifs[index],
-                                  // image: NetworkImage(
-                                  // snapData[index]['interactive']),
+                                  image: item,
                                   fit: BoxFit.cover,
                                   colorFilter: ColorFilter.mode(
                                     Colors.black54,
                                     BlendMode.darken,
                                   ))));
+                      // return FutureBuilder(
+                      //     future: _preCaches[index],
+                      //     builder: (context, snapshot) {
+                      //       if (snapshot.connectionState ==
+                      //           ConnectionState.done) {
+                      //         return Container(
+                      //             padding: EdgeInsets.only(top: 500),
+                      //             decoration: BoxDecoration(
+                      //                 image: DecorationImage(
+                      //                     image: item,
+                      //                     fit: BoxFit.cover,
+                      //                     colorFilter: ColorFilter.mode(
+                      //                       Colors.black54,
+                      //                       BlendMode.darken,
+                      //                     ))));
+                      //       } else {
+                      //         return Container(
+                      //           color: Colors.black87,
+                      //           child: Center(
+                      //             child: Text('image not ready'),
+                      //           ),
+                      //         );
+                      //       }
+                      //     });
+
                       // return VideoPlayerSlide(
                       //     // videoFuture: _initializeFutures[index],
                       //     controller: _controllers[index]);
