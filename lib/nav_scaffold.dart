@@ -7,8 +7,9 @@ import 'dart:convert';
 late final Future sliderFuture = fetchSliderFuture();
 Future fetchSliderFuture() async {
   print('fetch slider future');
-  String jsonBinUrl = 'https://api.jsonbin.io/b/62632205bc312b30ebeb8b2e/3';
+  // String jsonBinUrlMp4Videos = 'https://api.jsonbin.io/b/62632205bc312b30ebeb8b2e/3';
   // String url = 'https://wolvideos.firebaseapp.com/wolProject.js';
+  String jsonBinUrl = 'https://api.jsonbin.io/b/6266f83f25069545a3291c1c';
   http.Response response = await http.get(Uri.parse(jsonBinUrl));
   List data = jsonDecode(response.body)['videos'];
   return data;
