@@ -10,13 +10,13 @@ const TextStyle optionStyle = TextStyle(
 );
 
 final List<Widget> routeList = [
-  // Text(
-  //   'Live',
-  //   style: optionStyle,
-  // ),
-  VideoTest(
-    dataFuture: sliderFuture,
+  Text(
+    'Live',
+    style: optionStyle,
   ),
+  // VideoTest(
+  //   dataFuture: sliderFuture,
+  // ),
   Text(
     'Social',
     style: optionStyle,
