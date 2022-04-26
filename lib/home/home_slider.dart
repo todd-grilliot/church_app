@@ -23,7 +23,7 @@ class _FullScreenSliderState extends State<FullScreenSlider> {
   Future<List> getGifFutures() async {
     _dataMaps = await widget.dataFuture;
 
-    _gifs = await _dataMaps.map<NetworkImage>((item) {
+    _gifs = _dataMaps.map<NetworkImage>((item) {
       return NetworkImage(item['interactive']);
     }).toList();
     // wait for all of them.. takes longer.. but doesn't have that black background...
