@@ -1,26 +1,62 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class Slide extends StatelessWidget {
+class Slide extends StatefulWidget {
   final NetworkImage gif;
+  final NetworkImage thumbnail;
   final Map slideData;
   final int slideIndex;
-  final List gifsList;
+  final int slidesLength;
+  // final List gifsList;
+  final Future precacheFuture;
   const Slide(
       {Key? key,
       required this.gif,
+      required this.thumbnail,
       required this.slideData,
       required this.slideIndex,
-      required this.gifsList})
+      required this.slidesLength,
+      // required this.gifsList,
+      required this.precacheFuture})
       : super(key: key);
 
   @override
+  _SlideState createState() => _SlideState();
+}
+
+// when you get the future, then set state.. gifIsLoaded = true;
+// also what's going on with that button thing.../?
+
+class _SlideState extends State<Slide> {
+  bool _gifIsLoaded = false;
+
+  void setPrecacheState() async {
+    await widget.precacheFuture;
+    if (!mounted) return;
+    setState(() {
+      _gifIsLoaded = true;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setPrecacheState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    List _lengthList = List.filled(widget.slidesLength, null);
     return Container(
       padding: EdgeInsets.only(top: 500),
       decoration: BoxDecoration(
           image: DecorationImage(
-              image: gif,
+              image: _gifIsLoaded ? widget.gif : widget.thumbnail,
               fit: BoxFit.cover,
               colorFilter: ColorFilter.mode(
                 Colors.black54,
@@ -40,14 +76,14 @@ class Slide extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(slideData['date'],
+                Text(widget.slideData['date'],
                     style: TextStyle(
                         color: Colors.white54,
                         fontWeight: FontWeight.w300,
                         fontSize: 18.0)),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 0, 0, 6.0),
-                  child: Text(slideData['name'],
+                  child: Text(widget.slideData['name'],
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
@@ -82,8 +118,8 @@ class Slide extends StatelessWidget {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: gifsList.map((value) {
-                    int index = gifsList.indexOf(value);
+                  children: _lengthList.asMap().entries.map((entry) {
+                    int index = entry.key;
                     return Container(
                         width: 8.0,
                         height: 8.0,
@@ -93,7 +129,7 @@ class Slide extends StatelessWidget {
                             shape: BoxShape.circle,
                             border:
                                 Border.all(width: 1.2, color: Colors.white)),
-                        child: slideIndex == index
+                        child: widget.slideIndex == index
                             ? Container(
                                 decoration: BoxDecoration(
                                 border: Border.all(

@@ -9,10 +9,14 @@ Future fetchSliderFuture() async {
   print('fetch slider future');
   // String jsonBinUrlMp4Videos = 'https://api.jsonbin.io/b/62632205bc312b30ebeb8b2e/3';
   // String url = 'https://wolvideos.firebaseapp.com/wolProject.js';
-  String jsonBinUrl = 'https://api.jsonbin.io/b/6266f83f25069545a3291c1c/1';
+  String jsonBinUrl = 'https://api.jsonbin.io/b/6266f83f25069545a3291c1c/2';
   http.Response response = await http.get(Uri.parse(jsonBinUrl));
   List data = jsonDecode(response.body)['videos'];
-  return data;
+  // we could pop off all the last one in a loop... we could split the array.. splice. yes splice is good.
+  //return just the most recent six...
+  //also why are the buttons highlighting that way...
+
+  return data.sublist(0, 6);
 }
 
 class NavScaffold extends StatefulWidget {
@@ -70,6 +74,11 @@ class _NavScaffoldState extends State<NavScaffold> {
         child: _routes.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Colors.transparent,
+        fixedColor: Colors.white,
+        unselectedItemColor: Colors.white,
+        iconSize: 10,
         // elevation: 0, //getting rid of this leaves a shadow...
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(

@@ -16,19 +16,28 @@ class FullScreenSlider extends StatefulWidget {
 class _FullScreenSliderState extends State<FullScreenSlider> {
   var timeStamp;
   late final List<NetworkImage> _gifs;
+  late final List<Future> _gifPrecaches;
+  late final List<NetworkImage> _thumbnails;
   late List _dataMaps;
   late Future<List> _gifFutures;
 
   // gets data, awaits first image, concurrently precaches all of them and returns a future...
   Future<List> getGifFutures() async {
     _dataMaps = await widget.dataFuture;
+    _gifPrecaches = List.filled(
+        _dataMaps.length, Future(() {})); // blank futures to initialize..
 
     _gifs = _dataMaps.map<NetworkImage>((item) {
       return NetworkImage(item['interactive']);
     }).toList();
+    _thumbnails = _dataMaps.map<NetworkImage>((item) {
+      return NetworkImage(item['thumbnail']);
+    }).toList();
+
     // wait for all of them.. takes longer.. but doesn't have that black background...
-    for (var i = 0; i < _gifs.length; i++) {
-      await precacheImage(NetworkImage(_dataMaps[i]['interactive']), context);
+    for (var i = 0; i < _dataMaps.length; i++) {
+      _gifPrecaches[i] = precacheImage(_gifs[i], context);
+      await precacheImage(_thumbnails[i], context);
     }
     //we can get one image in about 2.7 seconds, but 5 images in 6.2 seconds
     // await precacheImage(NetworkImage(data[0]['interactive']), context);
@@ -79,14 +88,16 @@ class _FullScreenSliderState extends State<FullScreenSlider> {
                     enableInfiniteScroll: false,
                     autoPlay: true,
                   ),
-                  items: snapData.map((item) {
-                    int index = snapData.indexOf(item);
+                  items: snapData.asMap().entries.map((item) {
+                    int index = item.key;
                     return Builder(builder: (BuildContext context) {
                       return Slide(
-                        gif: item,
+                        gif: item.value,
+                        thumbnail: _thumbnails[index],
                         slideData: _dataMaps[index],
                         slideIndex: index,
-                        gifsList: snapData,
+                        slidesLength: snapData.length,
+                        precacheFuture: _gifPrecaches[index],
                       );
                     });
                   }).toList(),
