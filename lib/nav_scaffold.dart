@@ -10,9 +10,11 @@ Future fetchSliderFuture() async {
   // String jsonBinUrlMp4Videos = 'https://api.jsonbin.io/b/62632205bc312b30ebeb8b2e/3';
   // String url = 'https://wolvideos.firebaseapp.com/wolProject.js';
   String jsonBinUrl = 'https://api.jsonbin.io/b/6266f83f25069545a3291c1c/2';
+  String badUrl = 'https://api.jsonbin.io/b/6266f83f25069545a3291c1c/4';
   http.Response response = await http.get(Uri.parse(jsonBinUrl));
-  List data = jsonDecode(response.body)['videos'];
+  if (response.statusCode != 200) return [];
 
+  List data = jsonDecode(response.body)['videos'];
   return data.sublist(0, 6);
 }
 

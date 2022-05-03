@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_svg/svg.dart';
 import 'slide.dart' show Slide;
 
 class FullScreenSlider extends StatefulWidget {
@@ -21,10 +22,17 @@ class _FullScreenSliderState extends State<FullScreenSlider> {
   late List<NetworkImage> _thumbnails;
   late List _dataMaps;
   late Future<List> _gifFutures;
+  bool _noConnection = false;
+  double _animateMargin = 0;
 
   // gets data, awaits first image, concurrently precaches all of them and returns a future...
   Future<List> getGifFutures() async {
     _dataMaps = await widget.dataFuture;
+    if (_dataMaps.length == 0) {
+      setState(() {
+        _noConnection = true;
+      });
+    }
 
     _gifs = _dataMaps.map<NetworkImage>((item) {
       return NetworkImage(item['interactive']);
@@ -48,6 +56,19 @@ class _FullScreenSliderState extends State<FullScreenSlider> {
   void initState() {
     super.initState();
     timeStamp = DateTime.now().millisecondsSinceEpoch;
+    onFinishAnimation();
+  }
+
+  void onFinishAnimation() {
+    Future.delayed(Duration(milliseconds: 10)).then((_) {
+      setState(() {
+        if (_animateMargin == 0)
+          _animateMargin = 100;
+        else
+          _animateMargin = 0;
+      });
+      print('on finish $_animateMargin');
+    });
   }
 
   @override
@@ -68,47 +89,76 @@ class _FullScreenSliderState extends State<FullScreenSlider> {
       builder: (context) {
         final double _fullHeight = MediaQuery.of(context).size.height;
 
-        return FutureBuilder(
-            future: _gifFutures,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                timeStamp -= DateTime.now().millisecondsSinceEpoch;
-                print('time to load $timeStamp');
-                List snapData = snapshot.data as List;
-                snapData.map((item) {
-                  int index = snapData.indexOf(item);
-                  NetworkImage gif = _gifs[index];
-                  return gif;
-                }).toList();
-                return CarouselSlider(
-                  options: CarouselOptions(
-                    height: _fullHeight,
-                    viewportFraction: 1.0,
-                    enlargeCenterPage: false,
-                    enableInfiniteScroll: false,
-                    autoPlay: true,
-                  ),
-                  items: snapData.asMap().entries.map((item) {
-                    int index = item.key;
-                    return Builder(builder: (BuildContext context) {
-                      // print('building slide');
-                      return Slide(
-                        gif: item.value,
-                        thumbnail: _thumbnails[index],
-                        slideData: _dataMaps[index],
-                        slideIndex: index,
-                        slidesLength: snapData.length,
-                        precacheFuture: _gifPrecaches[index],
-                      );
-                    });
-                  }).toList(),
-                );
-              } else {
-                return Center(
-                  child: Text('not connecteed'),
-                );
-              }
-            });
+        return _noConnection
+            ? Center(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        'assets/icons/LoGo.svg',
+                        height: 80,
+                        width: 80,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          'Failure To Connect',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                    ]),
+              )
+            : FutureBuilder(
+                future: _gifFutures,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    timeStamp -= DateTime.now().millisecondsSinceEpoch;
+                    print('time to load $timeStamp');
+                    List snapData = snapshot.data as List;
+                    snapData.map((item) {
+                      int index = snapData.indexOf(item);
+                      NetworkImage gif = _gifs[index];
+                      return gif;
+                    }).toList();
+                    return CarouselSlider(
+                      options: CarouselOptions(
+                        height: _fullHeight,
+                        viewportFraction: 1.0,
+                        enlargeCenterPage: false,
+                        enableInfiniteScroll: false,
+                        autoPlay: true,
+                      ),
+                      items: snapData.asMap().entries.map((item) {
+                        int index = item.key;
+                        return Builder(builder: (BuildContext context) {
+                          // print('building slide');
+                          return Slide(
+                            gif: item.value,
+                            thumbnail: _thumbnails[index],
+                            slideData: _dataMaps[index],
+                            slideIndex: index,
+                            slidesLength: snapData.length,
+                            precacheFuture: _gifPrecaches[index],
+                          );
+                        });
+                      }).toList(),
+                    );
+                  } else {
+                    return Center(
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 2000),
+                        curve: Curves.easeInOutQuad,
+                        onEnd: onFinishAnimation,
+                        margin: EdgeInsets.only(bottom: _animateMargin),
+                        child: SvgPicture.asset(
+                          'assets/icons/LoGo.svg',
+                          height: 80,
+                          width: 80,
+                        ),
+                      ),
+                    );
+                  }
+                });
       },
     );
   }

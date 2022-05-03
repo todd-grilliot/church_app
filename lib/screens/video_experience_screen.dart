@@ -37,27 +37,28 @@ class _VideoExperienceScreenState extends State<VideoExperienceScreen> {
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as ScreenArguments;
-    _controller = VideoPlayerController.network(args.url);
-    _chewieController = ChewieController(
-      videoPlayerController: _controller,
-      aspectRatio: 3 / 2,
-      autoPlay: true,
-      looping: true,
-    );
-    _controller.initialize().then((_) {
-      setState(() {
-        _isLoaded = true;
-        // _controller.play();
-        // _controller.setLooping(true);
-      });
-    });
+    // _controller = VideoPlayerController.network(args.url);
+    // _chewieController = ChewieController(
+    //   videoPlayerController: _controller,
+    //   aspectRatio: 3 / 2,
+    //   autoPlay: true,
+    //   looping: true,
+    // );
+    // _controller.initialize().then((_) {
+    //   setState(() {
+    //     _isLoaded = true;
+    //     // _controller.play();
+    //     // _controller.setLooping(true);
+    //   });
+    // });
     return Scaffold(
       appBar: AppBar(
         title: Text(args.title),
       ),
       body: Center(
         child: _isLoaded
-            ? Chewie(controller: _chewieController)
+            // ? Chewie(controller: _chewieController)
+            ? Text('video')
             : CircularProgressIndicator(),
       ),
     );
