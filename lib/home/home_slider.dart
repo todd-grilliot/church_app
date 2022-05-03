@@ -15,17 +15,16 @@ class FullScreenSlider extends StatefulWidget {
 
 class _FullScreenSliderState extends State<FullScreenSlider> {
   var timeStamp;
-  late final List<NetworkImage> _gifs;
-  late final List<Future> _gifPrecaches;
-  late final List<NetworkImage> _thumbnails;
+  late List<NetworkImage> _gifs;
+  final List<Future> _gifPrecaches =
+      List.filled(6, Future(() {})); // blank futures to initialize..
+  late List<NetworkImage> _thumbnails;
   late List _dataMaps;
   late Future<List> _gifFutures;
 
   // gets data, awaits first image, concurrently precaches all of them and returns a future...
   Future<List> getGifFutures() async {
     _dataMaps = await widget.dataFuture;
-    _gifPrecaches = List.filled(
-        _dataMaps.length, Future(() {})); // blank futures to initialize..
 
     _gifs = _dataMaps.map<NetworkImage>((item) {
       return NetworkImage(item['interactive']);
@@ -60,6 +59,7 @@ class _FullScreenSliderState extends State<FullScreenSlider> {
   @override
   void dispose() {
     super.dispose();
+    // print('dispose home slider');
   }
 
   @override
@@ -91,6 +91,7 @@ class _FullScreenSliderState extends State<FullScreenSlider> {
                   items: snapData.asMap().entries.map((item) {
                     int index = item.key;
                     return Builder(builder: (BuildContext context) {
+                      // print('building slide');
                       return Slide(
                         gif: item.value,
                         thumbnail: _thumbnails[index],

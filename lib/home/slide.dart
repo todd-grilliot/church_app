@@ -1,5 +1,8 @@
+import 'package:church_app/screens/video_experience_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:avatar_glow/avatar_glow.dart';
+import 'package:flutter/services.dart';
 
 class Slide extends StatefulWidget {
   final NetworkImage gif;
@@ -7,18 +10,19 @@ class Slide extends StatefulWidget {
   final Map slideData;
   final int slideIndex;
   final int slidesLength;
-  // final List gifsList;
   final Future precacheFuture;
-  const Slide(
-      {Key? key,
-      required this.gif,
-      required this.thumbnail,
-      required this.slideData,
-      required this.slideIndex,
-      required this.slidesLength,
-      // required this.gifsList,
-      required this.precacheFuture})
-      : super(key: key);
+  bool isLiked;
+  Slide({
+    Key? key,
+    required this.gif,
+    required this.thumbnail,
+    required this.slideData,
+    required this.slideIndex,
+    required this.slidesLength,
+    // required this.gifsList,
+    required this.precacheFuture,
+    this.isLiked = false,
+  }) : super(key: key);
 
   @override
   _SlideState createState() => _SlideState();
@@ -38,6 +42,27 @@ class _SlideState extends State<Slide> {
     });
   }
 
+  void handleVideoButton() {
+    print('video');
+    String _title = widget.slideData['name'];
+    String _url = widget.slideData['video_link'];
+    Navigator.pushNamed(context, VideoExperienceScreen.routeName,
+        arguments: ScreenArguments(_title, _url));
+  }
+
+  void handleLike() {
+    setState(() {
+      widget.isLiked = !widget.isLiked;
+    });
+  }
+
+  void handleShare() {
+    String _link = widget.slideData['share_link'];
+    Clipboard.setData(ClipboardData(text: _link)).then((value) =>
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("copied to clipboard"))));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -47,11 +72,13 @@ class _SlideState extends State<Slide> {
   @override
   void dispose() {
     super.dispose();
+    // print('dispose slide');
   }
 
   @override
   Widget build(BuildContext context) {
     List _lengthList = List.filled(widget.slidesLength, null);
+
     return Container(
       padding: EdgeInsets.only(top: 500),
       decoration: BoxDecoration(
@@ -66,11 +93,14 @@ class _SlideState extends State<Slide> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            flex: 2,
-            child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: SvgPicture.asset("assets/icons/Share.svg")),
-          ),
+              flex: 2,
+              child: IconButton(
+                  constraints: BoxConstraints(),
+                  padding: EdgeInsets.all(16.0),
+                  onPressed: handleShare,
+                  icon: SvgPicture.asset(
+                    'assets/icons/Share.svg',
+                  ))),
           Expanded(
             flex: 8,
             child: Column(
@@ -95,7 +125,7 @@ class _SlideState extends State<Slide> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                        onPressed: null,
+                        onPressed: handleVideoButton,
                         child: Row(children: [
                           Text('Experience'),
                           Padding(
@@ -145,11 +175,28 @@ class _SlideState extends State<Slide> {
             ),
           ),
           Expanded(
-            flex: 2,
-            child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: SvgPicture.asset('assets/icons/Like.svg')),
-          ),
+              flex: 2,
+              child: widget.isLiked
+                  ? AvatarGlow(
+                      endRadius: 40.0,
+                      repeat: false,
+                      duration: Duration(milliseconds: 1000),
+                      // repeatPauseDuration: Duration.zero,
+                      child: IconButton(
+                          constraints: BoxConstraints(),
+                          padding: EdgeInsets.all(16.0),
+                          onPressed: handleLike,
+                          icon: SvgPicture.asset(
+                            'assets/icons/Like-filled.svg',
+                            color: Colors.white,
+                          )))
+                  : IconButton(
+                      constraints: BoxConstraints(),
+                      padding: EdgeInsets.all(16.0),
+                      onPressed: handleLike,
+                      icon: SvgPicture.asset(
+                        'assets/icons/Like.svg',
+                      )))
         ],
       ),
     );

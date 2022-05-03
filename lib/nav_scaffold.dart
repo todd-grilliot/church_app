@@ -12,9 +12,6 @@ Future fetchSliderFuture() async {
   String jsonBinUrl = 'https://api.jsonbin.io/b/6266f83f25069545a3291c1c/2';
   http.Response response = await http.get(Uri.parse(jsonBinUrl));
   List data = jsonDecode(response.body)['videos'];
-  // we could pop off all the last one in a loop... we could split the array.. splice. yes splice is good.
-  //return just the most recent six...
-  //also why are the buttons highlighting that way...
 
   return data.sublist(0, 6);
 }
@@ -78,7 +75,10 @@ class _NavScaffoldState extends State<NavScaffold> {
         backgroundColor: Colors.transparent,
         fixedColor: Colors.white,
         unselectedItemColor: Colors.white,
-        iconSize: 10,
+        // iconSize: 10,
+        // unselectedFontSize: 10,
+        unselectedLabelStyle:
+            TextStyle(overflow: TextOverflow.fade, letterSpacing: -1.3),
         // elevation: 0, //getting rid of this leaves a shadow...
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -86,7 +86,9 @@ class _NavScaffoldState extends State<NavScaffold> {
               label: 'LIVE',
               backgroundColor: Colors.transparent),
           BottomNavigationBarItem(
-              icon: SvgPicture.asset('assets/icons/Social.svg'),
+              icon: SvgPicture.asset(
+                'assets/icons/Social.svg',
+              ),
               label: 'SOCIAL',
               backgroundColor: Colors.transparent),
           BottomNavigationBarItem(
