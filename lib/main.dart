@@ -19,10 +19,10 @@ class MyApp extends StatelessWidget {
       // title: _title,
       home: NavScaffold(),
       theme: ThemeData(fontFamily: 'Lato'),
-      routes: {
-        VideoExperienceScreen.routeName: (context) =>
-            const VideoExperienceScreen()
-      },
+      // routes: {
+      //   VideoExperienceScreen.routeName: (context) =>
+      //       const VideoExperienceScreen()
+      // },
     );
   }
 }

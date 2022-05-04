@@ -46,8 +46,14 @@ class _SlideState extends State<Slide> {
     print('video');
     String _title = widget.slideData['name'];
     String _url = widget.slideData['video_link'];
-    Navigator.pushNamed(context, VideoExperienceScreen.routeName,
-        arguments: ScreenArguments(_title, _url));
+    // Navigator.pushNamed(context, VideoExperienceScreen.routeName,
+    // arguments: ScreenArguments(_title, _url));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            settings: RouteSettings(name: VideoExperienceScreen.routeName),
+            builder: (context) =>
+                VideoExperienceScreen(url: _url, title: _title)));
   }
 
   void handleLike() {

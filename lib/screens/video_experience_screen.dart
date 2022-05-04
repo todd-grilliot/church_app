@@ -1,17 +1,16 @@
 import 'package:chewie/chewie.dart';
+import 'package:church_app/video_test.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
-
-class ScreenArguments {
-  final String title;
-  final String url;
-
-  ScreenArguments(this.title, this.url);
-}
+import 'package:flutter_svg/flutter_svg.dart';
 
 class VideoExperienceScreen extends StatefulWidget {
-  const VideoExperienceScreen({Key? key}) : super(key: key);
+  final String url;
+  final String title;
+  const VideoExperienceScreen(
+      {Key? key, required this.url, this.title = 'title'})
+      : super(key: key);
   static const routeName = '/experience-video';
   @override
   State<VideoExperienceScreen> createState() => _VideoExperienceScreenState();
@@ -19,48 +18,47 @@ class VideoExperienceScreen extends StatefulWidget {
 
 class _VideoExperienceScreenState extends State<VideoExperienceScreen> {
   late VideoPlayerController _controller;
+  late Chewie _playerWidget;
   late ChewieController _chewieController;
-  bool _isLoaded = false;
 
   @override
   void initState() {
     super.initState();
-    // final args = ModalRoute.of(context)!.settings.arguments as ScreenArguments;
-    // _controller = VideoPlayerController.network(args.url);
-    // _controller.initialize().then((_) {
-    // setState(() {
-    // _isLoaded = true;
-    // });
-    // });
+    _controller = VideoPlayerController.network(widget.url);
+    _chewieController = ChewieController(
+        videoPlayerController: _controller,
+        autoPlay: true,
+        fullScreenByDefault: false,
+        aspectRatio: 16.0 / 9.0);
+    _playerWidget = Chewie(
+      controller: _chewieController,
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+    _chewieController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as ScreenArguments;
-    // _controller = VideoPlayerController.network(args.url);
-    // _chewieController = ChewieController(
-    //   videoPlayerController: _controller,
-    //   aspectRatio: 3 / 2,
-    //   autoPlay: true,
-    //   looping: true,
-    // );
-    // _controller.initialize().then((_) {
-    //   setState(() {
-    //     _isLoaded = true;
-    //     // _controller.play();
-    //     // _controller.setLooping(true);
-    //   });
-    // });
     return Scaffold(
+      backgroundColor: Colors.grey[500],
+      extendBodyBehindAppBar: true,
+      extendBody: true,
       appBar: AppBar(
-        title: Text(args.title),
+        // centerTitle: true,
+        title: Text(
+          widget.title,
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.w900, letterSpacing: 1),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
-      body: Center(
-        child: _isLoaded
-            // ? Chewie(controller: _chewieController)
-            ? Text('video')
-            : CircularProgressIndicator(),
-      ),
+      body: Center(child: _playerWidget),
     );
   }
 }
