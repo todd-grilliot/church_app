@@ -103,7 +103,7 @@ class _NavScaffoldState extends State<NavScaffold> {
                 color: Colors.white,
               ),
               label: 'HOME',
-              backgroundColor: Colors.transparent),
+              backgroundColor: Colors.white),
           BottomNavigationBarItem(
               icon: SvgPicture.asset('assets/icons/Blog.svg'),
               label: 'BLOG',

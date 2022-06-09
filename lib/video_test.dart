@@ -14,22 +14,26 @@ final String _url =
 final String _url2 =
     'https://player.vimeo.com/external/656370948.m3u8?s=e50ca2b440798886646ba88a07e9c46a90c9df11';
 final _videoPlayerController = VideoPlayerController.network(_url2);
-final _chewieController = ChewieController(
-    videoPlayerController: _videoPlayerController,
-    autoPlay: true,
-    looping: true);
-final playerWidget = Chewie(
-  controller: _chewieController,
-);
+
+_initialize() async {
+  print('here we go');
+  await _videoPlayerController.initialize();
+  print('initialized');
+  _videoPlayerController.play();
+}
 
 class _VideoTestState extends State<VideoTest> {
   @override
   void initState() {
     super.initState();
+    print('init state');
+    _initialize(); // then setSTate...
 
-    () async {
-      await _videoPlayerController.initialize();
-    };
+    // () async {
+    //   print('here we go');
+    //   await _videoPlayerController.initialize();
+    //   print('initialized');
+    // }
   }
 
   // @override
@@ -41,9 +45,55 @@ class _VideoTestState extends State<VideoTest> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(child: Center(child: playerWidget));
+    return Container(
+        child: Center(
+            child: _videoPlayerController.value.isInitialized
+                ? AspectRatio(
+                    aspectRatio: _videoPlayerController.value.aspectRatio,
+                    child: VideoPlayer(_videoPlayerController),
+                  )
+                : Center(
+                    child: Text('initializing'),
+                  )));
   }
 }
+
+
+// final String _url =
+//     'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4';
+// final String _url2 =
+//     'https://player.vimeo.com/external/656370948.m3u8?s=e50ca2b440798886646ba88a07e9c46a90c9df11';
+// final _videoPlayerController = VideoPlayerController.network(_url2);
+// final _chewieController = ChewieController(
+//     videoPlayerController: _videoPlayerController,
+//     autoPlay: true,
+//     looping: true);
+// final playerWidget = Chewie(
+//   controller: _chewieController,
+// );
+
+// class _VideoTestState extends State<VideoTest> {
+//   @override
+//   void initState() {
+//     super.initState();
+
+//     () async {
+//       await _videoPlayerController.initialize();
+//     };
+//   }
+
+//   // @override
+//   // void dispose() {
+//   //   super.dispose();
+//   //   _videoPlayerController.dispose();
+//   //   _chewieController.dispose();
+//   // }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(child: Center(child: playerWidget));
+//   }
+// }
 
 
 

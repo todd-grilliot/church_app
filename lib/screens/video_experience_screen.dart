@@ -1,9 +1,6 @@
 import 'package:chewie/chewie.dart';
-import 'package:church_app/video_test.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'package:chewie/chewie.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class VideoExperienceScreen extends StatefulWidget {
   final String url;
@@ -27,9 +24,16 @@ class _VideoExperienceScreenState extends State<VideoExperienceScreen> {
     _controller = VideoPlayerController.network(widget.url);
     _chewieController = ChewieController(
         videoPlayerController: _controller,
+        // autoInitialize: true,
+        allowFullScreen: true,
+        showControls: true,
         autoPlay: true,
         fullScreenByDefault: false,
-        aspectRatio: 16.0 / 9.0);
+        aspectRatio: 16 / 9);
+    // _chewieController.addListener(() {
+    //   print('abcd chewie listener');
+    //   setState(() {});
+    // });
     _playerWidget = Chewie(
       controller: _chewieController,
     );
@@ -45,20 +49,27 @@ class _VideoExperienceScreenState extends State<VideoExperienceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[500],
-      extendBodyBehindAppBar: true,
-      extendBody: true,
-      appBar: AppBar(
-        // centerTitle: true,
-        title: Text(
-          widget.title,
-          style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.w900, letterSpacing: 1),
+        backgroundColor: Colors.black,
+        extendBodyBehindAppBar: true,
+        extendBody: true,
+        appBar: AppBar(
+          // centerTitle: true,
+          title: Text(
+            widget.title,
+            style: TextStyle(
+                fontSize: 20, fontWeight: FontWeight.w900, letterSpacing: 1),
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
         ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
-      body: Center(child: _playerWidget),
-    );
+        body: SafeArea(
+            child: Center(
+          child: Container(
+              child: Theme(
+                  data: ThemeData.light().copyWith(
+                    platform: TargetPlatform.iOS,
+                  ),
+                  child: _playerWidget)),
+        )));
   }
 }
